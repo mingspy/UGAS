@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{6b2d1033-77a7-4ff2-ce86-112146478398}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "abilitysystem", "abilitysystem.csproj", "{201a5c18-599d-8edf-38e2-07554bcb5816}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{2416c0b6-d132-0eac-fd0b-5763a9bab6d1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gameplaytag", "gameplaytag.csproj", "{aa1e2d8d-4eb7-412d-faa3-e5461c9eea93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "attributesystem", "attributesystem.csproj", "{8c9985e8-bd7f-7f37-680b-25d0633fdbd4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6b2d1033-77a7-4ff2-ce86-112146478398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6b2d1033-77a7-4ff2-ce86-112146478398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{201a5c18-599d-8edf-38e2-07554bcb5816}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{201a5c18-599d-8edf-38e2-07554bcb5816}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2416c0b6-d132-0eac-fd0b-5763a9bab6d1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2416c0b6-d132-0eac-fd0b-5763a9bab6d1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{aa1e2d8d-4eb7-412d-faa3-e5461c9eea93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{aa1e2d8d-4eb7-412d-faa3-e5461c9eea93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8c9985e8-bd7f-7f37-680b-25d0633fdbd4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8c9985e8-bd7f-7f37-680b-25d0633fdbd4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
