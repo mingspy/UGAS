@@ -145,6 +145,57 @@ GAS采用组件化设计，将能力、属性、效果等概念分解为独立�
       - gameplay-tags/     : 标签系统
 
 ## 代码实现
+### 技能效果
+子弹的飞行特效实现为projectile，具体代码为 [MyProjectileAbilityScriptableObject.ActivateAbility](Assets/My Gameplay Ability System/Ability System/MyProjectileAbilityScriptableObject.cs)  
+这里面有个关键点是魔法和生命的扣减都是当做GameEffect来实现的，参考
+```csharp
+                // 初始化子弹预制件
+                var go = Instantiate(this.projectile.gameObject, this.CastPointComponent.GetPosition(), this.CastPointComponent.transform.rotation);
+                var projectileInstance = go.GetComponent<Projectile>();
+                projectileInstance.Source = Owner;
+                projectileInstance.Target = target;
+                // 本身施加游戏效果，如增加冷却和扣减使用代价（如魔法值、生命值等）
+                this.Owner.ApplyGameplayEffectSpecToSelf(cdSpec);
+                this.Owner.ApplyGameplayEffectSpecToSelf(costSpec);
+                // TravelToTarget为协程，会帧级别更新子弹飞行轨迹。
+                yield return projectileInstance.TravelToTarget();
+                var effectSpec = this.Owner.MakeOutgoingSpec((this.Ability as MyProjectileAbilityScriptableObject).GameplayEffect);
+                // 子弹飞行结束，给目标施加游戏效果，如扣减生命值，加蓝
+                target.ApplyGameplayEffectSpecToSelf(effectSpec);
+```
+参考配置 Assets/My Gameplay Ability System/Ability System/Abilities/Ice Blast/Gameplay Effects/*.asset,看懂这一段，整个框架基本能理解7成了，其他的是一些辅助功能，和帧级别的更新。
+### 技能特效
+技能释放过程效果的显示, 属性改变时，AttributeSystemComponent.UpdateAttributeCurrentValues 会调用PreAttributeChange参考 [ShowDamageNumbersEventHandler](Assets/My Gameplay Ability System/Attributes/ShowDamageNumbersEventHandler.cs)，具体过程：    
+- ShowDamageNumbersEventHandler 做成了一个prefab，即 Assets/My Gameplay Ability System/Attributes/Damage Numbers.asset 被设置成了player.prefab的 AttributeSystemComponent.cs中AttributeSystemEvents的第三个成员
+- AttributeSystemComponent.LaterUpdate 调用 所有AttributeSystemEvents事件的PreAttributeChange
+- ShowDamageNumbersEventHandler 会判断绑定的主属性(即血量)是否变化，如果变化，则实例化血量扣减预制件(Assets/Prefabs/DamageNumber.prefab),显示血量扣减动画。动画细节查看该预制件的实现脚本 [DamageNumberComponent.cs](Assets/Scripts/DamageNumberComponent.cs)和[Damage Number Animator.controller](Assets/Animation/Damage Number Animator.controller)
+
+### 角色初始属性
+以Player为例，实际实现是用一种Ability进行属性初始化，代码调用流程如下
+- [AbilityController.start()](Assets/My Gameplay Ability System/Ability System/Abilities/AbilityController.cs)
+  - [AbilityController.ActivateInitialisationAbilities()](Assets/My Gameplay Ability System/Ability System/Abilities/AbilityController.cs) 
+    - 调用[InitialiseStatsAbilityScriptableObject.ActivateAbility()](Packages/com.sjai013.abilitysystem/Runtime/ability-system/Authoring/InitialiseStatsAbilityScriptableObject.cs)
+      - 根据每个InitialisationGE[i]构建特效配置，然后ApplyGameplayEffectSpecToSelf
+
+#### 具体实现
+玩家的初始化是一种技能配置，对应Unity资源为：[Player Stat Initialisation.asset](Assets/My Gameplay Ability System/Ability System/Abilities/Initial Stats/Player Stat Initialisation.asset)，该能力触发后会给玩家添加4个特效:
+- [PlayerInitialStats](Assets/My Gameplay Ability System/Ability System/Abilities/Initial Stats/Gameplay Effects/PlayerInitialStats.asset)，初始化玩家的三个基本属性
+  - Strength: 20  即力量值为20
+  - Agility: 21   即敏捷值为21
+  - Intelligence: 22  即智力值为22
+- [HealthManaInitialStats](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/HealthManaInitialStats.asset)，初始化玩家生命值和魔法值
+  - Health: 600，计算逻由[MaxHealthAttributeBackedModifier](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/Modifiers/MaxHealthAttributeBackedModifier.asset)实现，MaxHealthAttributeBackedModifier直接获取 MaxHealth属性的初始值
+    - [Max Health](Assets/My Gameplay Ability System/Attributes/Derived/Max Health.asset)是通过 Strength 计算获得，具体代码参考[LinearDerivedAttributeScriptableObject](Assets/My Gameplay Ability System/Attributes/Derived/LinearDerivedAttributeScriptableObject.cs),简单理解 MaxHealth = Strength * gradient + offset = 20 * 20 + 200
+  - Mana:  339 计算逻由[MaxManaAttributeBackedModifier](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/Modifiers/MaxManaAttributeBackedModifier.asset)实现，其获取MaxMana值，与MaxHealth类似
+    - [Max Mana](Assets/My Gameplay Ability System/Attributes/Derived/Max Mana.asset) = Intelligence * gradient + offset = 22 * 12 + 75
+- [ManaRegen](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/ManaRegen.asset),给魔法值增加Modifier，是一种Infinite类型的特效，代码实现在[ApplyDurationalGameplayEffect()](Packages/com.sjai013.abilitysystem/Runtime/ability-system/Components/AbilitySystemCharacter.cs)
+  - modifer的配置为[MaxManaAttributeBackedModifier](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/Modifiers/MaxManaAttributeBackedModifier.asset),具体逻辑是获取[Mana Regen](Assets/My Gameplay Ability System/Attributes/Derived/Mana Regen.asset)属性值
+    - [Mana Regen]属性值实现类似[Max Mana]，配置不一样，具体数值 = Intelligence * gradient + offset = 22 * 0.05 + 0.5 = 1.6
+- [HealthRegen](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/HealthRegen.asset)
+
+
+玩家还有一些其他属性，如Max Health, Max Mana, Health Regen, Mana Regen，实际驱动是在 InitialiseStatsAbilityScriptableObject.ActivateAbility调用 this.Owner.AttributeSystem.UpdateAttributeCurrentValues()驱动的。
+### 源码
 下面只列一些主要的类和文件
 
 | 模块                                 | 代码                                                                                                                                                      | 说明                                                                                                                                         |
@@ -177,3 +228,4 @@ GAS采用组件化设计，将能力、属性、效果等概念分解为独立�
 |  |[AbilityController](Assets/My%20Gameplay%20Ability%20System/Ability%20System/Abilities/AbilityController.cs)||                                                                                                                                                |
 ||||
 ||||
+

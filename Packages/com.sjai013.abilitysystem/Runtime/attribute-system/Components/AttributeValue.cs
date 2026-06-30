@@ -25,6 +25,11 @@ namespace AttributeSystem.Components
             other.Override = Override;
             return other;
         }
+
+        public override string ToString()
+        {
+            return $"{{ADD={Add},Multiply={Multiply},Override={Override}}}";
+        }
     }
 
 }

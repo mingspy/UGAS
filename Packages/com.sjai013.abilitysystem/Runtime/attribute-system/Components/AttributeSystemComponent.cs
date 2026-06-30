@@ -185,6 +185,10 @@ namespace AttributeSystem.Components
                 var _attribute = this.AttributeValues[i];
                 prevAttributeValues.Add(_attribute);
                 this.AttributeValues[i] = _attribute.Attribute.CalculateCurrentAttributeValue(_attribute, this.AttributeValues);
+                //if (_attribute.CurrentValue != this.AttributeValues[i].CurrentValue)
+                //{
+                //    Debug.Log($"{this.Attributes[i].Name}  {_attribute.CurrentValue} ----> {this.AttributeValues[i].CurrentValue}");
+                //}
             }
 
             for (var i = 0; i < this.AttributeSystemEvents.Length; i++)

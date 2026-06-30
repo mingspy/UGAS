@@ -58,15 +58,19 @@ public class MyProjectileAbilityScriptableObject : AbstractAbilityScriptableObje
                     EndAbility();
                     yield break;
                 }
-
+                
+                // 初始化子弹预制件
                 var go = Instantiate(this.projectile.gameObject, this.CastPointComponent.GetPosition(), this.CastPointComponent.transform.rotation);
                 var projectileInstance = go.GetComponent<Projectile>();
                 projectileInstance.Source = Owner;
                 projectileInstance.Target = target;
+                // 本身施加游戏效果，如增加冷却和扣减使用代价（如魔法值、生命值等）
                 this.Owner.ApplyGameplayEffectSpecToSelf(cdSpec);
                 this.Owner.ApplyGameplayEffectSpecToSelf(costSpec);
+                // TravelToTarget为协程，会帧级别更新子弹飞行轨迹。
                 yield return projectileInstance.TravelToTarget();
                 var effectSpec = this.Owner.MakeOutgoingSpec((this.Ability as MyProjectileAbilityScriptableObject).GameplayEffect);
+                // 子弹飞行结束，给目标施加游戏效果，如扣减生命值，加蓝
                 target.ApplyGameplayEffectSpecToSelf(effectSpec);
                 Destroy(go.gameObject);
             }
