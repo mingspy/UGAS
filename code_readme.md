@@ -194,7 +194,7 @@ GAS采用组件化设计，将能力、属性、效果等概念分解为独立�
 - [HealthRegen](Assets/My Gameplay Ability System/Ability System/Gameplay Effects/HealthRegen.asset)
 
 
-玩家还有一些其他属性，如Max Health, Max Mana, Health Regen, Mana Regen，实际驱动是在 InitialiseStatsAbilityScriptableObject.ActivateAbility调用 this.Owner.AttributeSystem.UpdateAttributeCurrentValues()驱动的。
+玩家所有设置的属性如Max Health, Max Mana, Health Regen, Mana Regen，实际驱动是在 AttributeSystem.UpdateAttributeCurrentValues()驱动的，开始可能会设置错误的数值，但由于逐帧驱动，会很快设置到正常数值。
 ### 源码
 下面只列一些主要的类和文件
 
