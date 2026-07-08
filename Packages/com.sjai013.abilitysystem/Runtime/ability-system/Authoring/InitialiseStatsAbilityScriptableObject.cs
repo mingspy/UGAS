@@ -49,15 +49,15 @@ namespace AbilitySystem.Authoring
                 InitialiseStatsAbilityScriptableObject abilitySO = this.Ability as InitialiseStatsAbilityScriptableObject;
                 this.Owner.AttributeSystem.UpdateAttributeCurrentValues();
 
-                Debug.Log($"---- InitialisationGE [{abilitySO.name}] start, total {abilitySO.InitialisationGE.Length} ---- ");
+                //Debug.Log($"---- InitialisationGE [{abilitySO.name}] start, total {abilitySO.InitialisationGE.Length} ---- ");
                 for (var i = 0; i < abilitySO.InitialisationGE.Length; i++)
                 {
-                    Debug.Log($"InitialisationGE {abilitySO.name}, InitialisationGE[{i}] = {abilitySO.InitialisationGE[i].name}");
+                    //Debug.Log($"InitialisationGE {abilitySO.name}, InitialisationGE[{i}] = {abilitySO.InitialisationGE[i].name}");
                     var effectSpec = this.Owner.MakeOutgoingSpec(abilitySO.InitialisationGE[i]);
                     this.Owner.ApplyGameplayEffectSpecToSelf(effectSpec);
                     this.Owner.AttributeSystem.UpdateAttributeCurrentValues();
                 }
-                Debug.Log($"==== InitialisationGE [{abilitySO.name}] end ====");
+                //Debug.Log($"==== InitialisationGE [{abilitySO.name}] end ====");
                 yield break;
             }
 

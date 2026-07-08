@@ -122,7 +122,7 @@ namespace AbilitySystem
                         attributeValue.BaseValue = magnitude;
                         break;
                 }
-                Debug.Log($"ApplyInstantGameplayEffect: spec {spec.GameplayEffect.name} Attribute {attribute.Name} magnitude {magnitude} BaseValue {attributeValue.BaseValue}");
+                //Debug.Log($"ApplyInstantGameplayEffect: spec {spec.GameplayEffect.name} Attribute {attribute.Name} magnitude {magnitude} BaseValue {attributeValue.BaseValue}");
                 this.AttributeSystem.SetAttributeBaseValue(attribute, attributeValue.BaseValue);
             }
         }
@@ -147,7 +147,7 @@ namespace AbilitySystem
                         break;
                 }
                 modifiersToApply.Add(new GameplayEffectContainer.ModifierContainer() { Attribute = modifier.Attribute, Modifier = attributeModifier });
-                Debug.Log($"ApplyDurationalGameplayEffect: spec {spec.GameplayEffect.name} Attribute {modifier.Attribute.Name} magnitude {magnitude} attributeModifier {attributeModifier}");
+                //Debug.Log($"ApplyDurationalGameplayEffect: spec {spec.GameplayEffect.name} Attribute {modifier.Attribute.Name} magnitude {magnitude} attributeModifier {attributeModifier}");
             }
             AppliedGameplayEffects.Add(new GameplayEffectContainer() { spec = spec, modifiers = modifiersToApply.ToArray() });
 
@@ -210,7 +210,7 @@ namespace AbilitySystem
 
 namespace AbilitySystem
 {
-    [Serializable]
+    //[Serializable]
     public class GameplayEffectContainer
     {
         public GameplayEffectSpec spec;
